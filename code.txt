@@ -1,0 +1,74 @@
+Given n points on a 2D plane, find the maximum number of points that lie on the same straight line.
+
+/**
+ * Definition for a point.
+ * struct Point {
+ *     int x;
+ *     int y;
+ *     Point() : x(0), y(0) {}
+ *     Point(int a, int b) : x(a), y(b) {}
+ * };
+ */
+ typedef pair<float, float> P;
+ bool comparePoint(Point x, Point y){
+     return x.x < y.x || (x.x==y.x && x.y < y.y);
+ }
+class Solution {
+public:
+    int maxPoints(vector<Point> &points) {
+    int size = (int)points.size();
+    if(size <=2) return size;
+    sort(points.begin(), points.end(), comparePoint);
+    map<P, set<int> > mp;
+    int flag = 1;
+    int max = 0;
+
+    for(int i=0; i<size-1; i++)
+    {
+        if(points[i].x == points[i+1].x && points[i].y == points[i+1].y){
+            flag++;
+            continue;
+        }
+        for(int j=i+1; j<size; j++)
+        {
+            float slope = 0;
+            float intecept = 0;
+            if(points[i].x == points[j].x){
+                slope = LONG_MAX;
+                intecept = points[j].x;
+            }
+            else
+            {
+                slope = (points[j].y-points[i].y)*1.0/(points[j].x-points[i].x);
+                intecept =(points[j].y*1.0 - slope*points[j].x);
+            }
+            
+            slope = (long)(slope*100)/100.0;
+            intecept= (long)(intecept*100)/100.0;
+            P pa = make_pair(slope, intecept);
+            set<int> s;
+            if(mp.find(pa) == mp.end())
+            {
+                for(int k=0; k<flag; k++){
+                    s.insert(i-k);
+                }
+                s.insert(j);
+                mp.insert(make_pair(pa, s));
+            }
+            else
+            {
+                s = mp[pa];
+                for(int k=0; k<flag; k++){
+                    s.insert(i-k);
+                }
+                s.insert(j);
+                mp[pa] = s;
+            }
+            max = max > (int)s.size() ? max: (int)s.size();
+        }
+        flag = 1;
+    }
+    return max = max > flag ? max: flag;
+
+    }
+};
