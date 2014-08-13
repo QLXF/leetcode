@@ -1,0 +1,59 @@
+class Solution {
+public:
+    void reverseWords(string &s) {
+        int len = s.length();
+        if(len == 0) return;
+        
+        stripspaces(s);
+        int f1=0; 
+        int f2=s.length()-1;
+        reversef1f2(s, f1, f2);
+        
+        f1=0; 
+        f2=0;
+        while(f2<s.length()){
+            while(f2<s.length() && s[f2] != ' '){
+                f2++;
+            }
+            reversef1f2(s, f1, f2-1);
+            f1=f2+1;
+            f2=f1;
+        }
+    }
+    
+    void reversef1f2(string& s, int f1, int f2){
+        while(f1<f2){
+            char tmp = s[f1];
+            s[f1]=s[f2];
+            s[f2]=tmp;
+            f1++;
+            f2--;
+        }    
+    }
+    
+    void stripspaces(string &s){
+        int f1=0; 
+        int f2=0;
+        while(f2<s.length()){
+            if((f2==0 && s[f2] == ' ') || (s[f2]== ' ' && s[f2-1] == ' ')){
+                f2++; 
+                continue;
+            }
+            s[f1]=s[f2];
+            f1++;
+            f2++;
+        }
+        if(f1 == 0){
+            s = "";
+        }
+        else {
+            s = s.substr(0, f1);
+            f1--;
+            while(f1>=0 && s[f1] == ' '){
+                f1--;
+            }
+            s = s.substr(0, f1+1);
+        }
+        return;
+    }
+};
