@@ -1,0 +1,95 @@
+class LRUCache{
+public:
+    LRUCache(int capacity) {
+        cap = capacity;
+        head = NULL;
+        end = NULL;
+        size = 0;
+    }
+    
+    void touch(int key){
+        Node* n = keypos[key];
+        if(size == 1) return;
+        if(n->pre == NULL){
+            head = n->next;
+            head->pre = NULL;
+            end->next = n;
+            n->next = NULL;
+            n->pre = end;
+            end = n;
+        }
+        else if(n->next != NULL){
+            n->pre->next = n->next;
+            n->next->pre = n->pre;
+            end->next = n;
+            n->next = NULL;
+            n->pre = end;
+            end = n;
+        }
+    }
+    
+    int get(int key) {
+        if(keypos.find(key) != keypos.end()){
+            touch(key);
+            return end->value;
+        }
+        else {
+            return -1;
+        }
+    }
+    
+    void set(int key, int value) {
+        if(keypos.find(key) != keypos.end()){
+            touch(key);
+            end->value = value;
+        }
+        else {
+            Node* n = new Node(key, value);
+            if(size < cap){
+                if(size == 0){
+                    head = n;
+                    end = n;
+                }
+                else {
+                    n->pre = end;
+                    n->next = NULL;
+                    end->next = n;
+                    end = n;
+                }
+            }
+            else{
+                Node* tmp = head;
+                head = head->next;
+                keypos.erase(tmp->key);
+                delete tmp;
+                size--;
+                if(size == 0){
+                    head = n;
+                    end = n;
+                }
+                else {
+                    head->pre = NULL;
+                    n->pre = end;
+                    n->next = NULL;
+                    end->next = n;
+                    end = n;
+                }
+            }
+            size++;
+            keypos.insert(make_pair(key, n));
+        }
+    }
+private:
+    struct Node{
+        Node* pre;
+        Node* next;
+        int value;
+        int key;
+        Node(int k, int v): key(k), value(v),pre(NULL), next(NULL) {}
+    };
+    int cap;
+    int size;
+    map<int, Node*> keypos;
+    Node* head;
+    Node* end;
+};
