@@ -1,0 +1,55 @@
+Given a string s and a dictionary of words dict, add spaces in s to construct a sentence where each word is a valid dictionary word.
+Return all such possible sentences.
+For example, given s = "catsanddog", dict = ["cat", "cats", "and", "sand", "dog"].
+A solution is ["cats and dog", "cat sand dog"].
+class Solution {
+public:
+    vector<string> wordBreak(string s, unordered_set<string> &dict) {
+        vector<string> v;
+        int len = s.length();
+        if(len == 0 || dict.size() ==0){
+            return v;
+        }
+        
+        vector<bool> b2(len, false);
+        
+        for(int i=len-1; i>=0; i--){
+            if(dict.find(s.substr(i)) != dict.end()){
+                b2[i] = true;
+                continue;
+            }
+            
+            for(int j=len-1; j>i; j--){
+                if(b2[j] && dict.find(s.substr(i, j-i)) != dict.end()){
+                    b2[i] = true;
+                    break;
+                }
+            }
+        }
+        v = wordBreakHelper(s, 0, len-1, dict, b2);
+        return v;
+    }
+    
+    vector<string> wordBreakHelper(string s, int start, int end, unordered_set<string> &dict, vector<bool>& b2){
+        vector<string> v;
+        if(start == end){
+            if(b2[start]){
+                v.push_back(s.substr(start, 1));
+            }
+            return v;
+        }
+        if(dict.find(s.substr(start, end-start+1)) != dict.end()){
+            v.push_back(s.substr(start, end-start+1));
+        }
+        for(int i= start+1; i<=end;i++){
+            if(b2[i] && dict.find(s.substr(start, i-start)) != dict.end()){
+                vector<string> v1= wordBreakHelper(s, i, end, dict, b2);
+                for(int j=0; j< v1.size(); j++){
+                    v.push_back(s.substr(start, i-start)+ " "+v1[j]);
+                }
+            }
+        }
+        return v;
+    }
+    
+};
