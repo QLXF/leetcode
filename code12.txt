@@ -1,0 +1,44 @@
+Given a binary tree, return the preorder traversal of its nodes' values.
+For example: Given binary tree {1,#,2,3},
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<int> preorderTraversal(TreeNode *root) {
+        vector<int> v;
+        if(!root) return v;
+        if(!root->left && !root->right){
+            v.push_back(root->val);
+            return v;
+        }
+        
+        set<TreeNode*> visited;
+        vector<TreeNode*> vt;
+        vt.push_back(root);
+        while(vt.size()>0){
+            TreeNode* tn = vt.back();
+            
+            if(visited.find(tn) == visited.end()){
+                v.push_back(tn->val);
+                visited.insert(tn);
+            }
+            if(tn->left && visited.find(tn->left) == visited.end()){
+                vt.push_back(tn->left);
+            }
+            else if(tn->right && visited.find(tn->right) == visited.end()){
+                vt.push_back(tn->right);
+            }
+            else {
+                vt.pop_back();
+            }
+        }
+        return v;
+    }
+};
