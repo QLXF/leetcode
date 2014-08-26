@@ -3,7 +3,6 @@ You have a car with an unlimited gas tank and it costs cost[i] of gas to travel 
 Return the starting gas station's index if you can travel around the circuit once, otherwise return -1.
 
 
-
 class Solution {
 public:
     int canCompleteCircuit(vector<int> &gas, vector<int> &cost) {
@@ -22,11 +21,13 @@ public:
                 continue;
             }
             int leftover = gas[i]-cost[i];
+            int count =1;
             for(int j=i+1; j%size<size; j++){
                 int k = j%size;
                 if (gas[k]+leftover >= cost[k]){
+                    count++;
                     leftover = gas[k]+leftover - cost[k];
-                    if(k==size-1){
+                    if(count==size){
                         found = true;
                         break;
                     }
