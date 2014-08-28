@@ -1,0 +1,70 @@
+Given a string s, partition s such that every substring of the partition is a palindrome.
+Return all possible palindrome partitioning of s.
+For example, given s = "aab", Return
+  [
+    ["aa","b"],
+    ["a","a","b"]
+  ]
+
+
+class Solution {
+public:
+    vector<vector<string>> partition(string s) {
+        vector<vector<string> > vv;
+        int len = s.length();
+        if(len == 0) return vv;
+        if(len == 1) {
+            vector<string> v(1, s);
+            vv.push_back(v);
+            return vv;
+        }
+
+        vector<vector<bool> > vb(len, vector<bool>(len, false));
+        for(int i=0; i<len; i++){
+            vb[i][i] = true;
+        }
+        
+        for(int i=0; i<len-1; i++){
+            if(s[i] == s[i+1]){
+                vb[i][i+1] = true;
+            }
+        }
+        
+        for(int i=3;i<=len; i++){
+            for(int j=0; j<=len-i; j++){
+                if(s[j] == s[j+i-1] && vb[j+1][j+i-2]){
+                    vb[j][j+i-1] = true;
+                }
+            }
+        }
+        
+        return partitionHelper(s, 0, len-1, vb);
+    }
+    
+    vector<vector<string> > partitionHelper(string& s, int start, int end, vector<vector<bool> >& vb){
+        vector<vector<string> > vv;
+        if(start == end){
+            vector<string> v(1, s.substr(start, 1));
+            vv.push_back(v);
+            return vv;
+        }
+        
+        if(vb[start][end]){
+            vector<string> v(1, s.substr(start, end-start+1));
+            vv.push_back(v);
+        }
+        
+        for(int i=start+1; i<=end; i++){
+            if(vb[start][i-1]){
+                vector<vector<string> > vv1 = partitionHelper(s, i, end, vb);
+                for(int k=0; k<vv1.size(); k++){
+                    vector<string> v(1, s.substr(start, i-start));
+                    v.insert(v.begin()+1, vv1[k].begin(), vv1[k].end());
+                    vv.push_back(v);
+                }
+            }
+        }
+        return vv;
+    }
+    
+};
