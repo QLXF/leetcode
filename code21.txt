@@ -1,0 +1,72 @@
+Given a binary tree containing digits from 0-9 only, each root-to-leaf path could represent a number.
+An example is the root-to-leaf path 1->2->3 which represents the number 123.
+Find the total sum of all root-to-leaf numbers.
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    int sumNumbers(TreeNode *root) {
+        if(!root) return 0;
+        if(!root->left && !root->right) return root->val;
+        return sumNumbersHelper(root->left, root->val) + sumNumbersHelper(root->right, root->val) ;
+    }
+    
+    int sumNumbersHelper(TreeNode *root, int pre){
+        if(!root) return 0;
+        if(!root->left && !root->right) return pre*10+root->val;
+        
+        return sumNumbersHelper(root->left, pre*10+root->val)+sumNumbersHelper(root->right, pre*10+root->val);
+        
+    }
+};
+
+//solution 2 iterative
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    int sumNumbers(TreeNode *root) {
+        if(!root) return 0;
+        if(!root->left && !root->right) return root->val;
+        vector<TreeNode*> v;
+        set<TreeNode*> st;
+        st.insert(root);
+        v.push_back(root);
+        int result = 0;
+        while(v.size() > 0){
+            TreeNode* n = v.back();
+            if(n->left && st.find(n->left) == st.end()){
+                n->left->val = n->val*10+ n->left->val;
+                v.push_back(n->left);
+                st.insert(n->left);
+            }
+            else if(n->right && st.find(n->right) == st.end()){
+                n->right->val = n->val*10+ n->right->val;
+                v.push_back(n->right);
+                st.insert(n->right);
+            }
+            else if(!n->left && !n->right){
+                result += n->val;
+                v.pop_back();
+            }
+            else {
+                v.pop_back();
+            }
+        }
+        return result;
+    }
+};
