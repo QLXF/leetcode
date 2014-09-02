@@ -1,0 +1,72 @@
+Given two words (start and end), and a dictionary, find all shortest transformation sequence(s) from start to end, such that:
+	1.	Only one letter can be changed at a time
+	2.	Each intermediate word must exist in the dictionary
+class Solution {
+public:
+vector<vector<string>> findLadders(string start, string end, unordered_set<string> &dict) {
+    vector<vector<string> > vv;
+    if(start.compare(end) == 0 || isValidTrans(start, end)){
+        vector<string> v;
+        v.push_back(start);
+        v.push_back(end);
+        vv.push_back(v);
+        return vv;
+    }
+    vector<string> vstart;
+    set<string> visited;
+    vstart.push_back(start);
+    visited.insert(start);
+    vv.push_back(vector<string>(1,start));
+    bool found = false;
+    while(vstart.size() > 0){
+        vector<string> v;
+        vector<vector<string> > vv1;
+        for(int i=0; i<vstart.size(); i++){
+            for(int j=0; j<vstart[i].length();j++){
+                for(char c='a'; c<='z'; c++){
+                    string s1 = vstart[i];
+                    if(s1[j] == c) continue;
+                    s1[j] = c;
+                    if(dict.find(s1) != dict.end() && isValidTrans(s1, end)){
+                        vector<string> v1(vv[i].begin(), vv[i].end());
+                        v1.push_back(s1);
+                        v1.push_back(end);
+                        vv1.push_back(v1);
+                        found = true;
+                    }
+                    else if(dict.find(s1) != dict.end()){
+                        if(visited.find(s1) == visited.end()){
+                            v.push_back(s1);
+                            visited.insert(s1);
+                            if(!found){
+                                vector<string> v1(vv[i].begin(), vv[i].end());
+                                v1.push_back(s1);
+                                vv1.push_back(v1);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        vv.clear();
+        vv.insert(vv.begin(), vv1.begin(), vv1.end());
+        vv1.clear();
+        if(found) break;
+        vstart.clear();
+        vstart.insert(vstart.begin(), v.begin(), v.end());
+        v.clear();
+    }
+    return vv;
+}
+    
+    bool isValidTrans(string s1, string s2){
+        if(s1.length() != s2.length()) return false;
+        int diff =0;
+        for(int i=0; i<s1.length(); i++){
+            if(s1[i] != s2[i]){
+                diff++;
+            }
+        }
+        return diff == 1? true:false;
+    }
+};
