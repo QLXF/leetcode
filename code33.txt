@@ -1,0 +1,76 @@
+Given a binary tree
+    struct TreeLinkNode {
+      TreeLinkNode *left;
+      TreeLinkNode *right;
+      TreeLinkNode *next;
+    }
+
+Populate each next pointer to point to its next right node. If there is no next right node, the next pointer should be set to NULL.
+Initially, all next pointers are set to NULL.
+/**
+ * Definition for binary tree with next pointer.
+ * struct TreeLinkNode {
+ *  int val;
+ *  TreeLinkNode *left, *right, *next;
+ *  TreeLinkNode(int x) : val(x), left(NULL), right(NULL), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    void connect(TreeLinkNode *root) {
+        if(!root) return;
+        if(!root->left && !root->right){
+            return;
+        }
+        vector<TreeLinkNode*> v;
+        v.push_back(root);
+        while(v.size()>0){
+            vector<TreeLinkNode*> v1;
+            for(int i=0; i<v.size(); i++){
+               if(v[i]->left){
+                v1.push_back(v[i]->left);
+               }
+               if(v[i]->right){
+                v1.push_back(v[i]->right);
+               }
+            }
+            if(v1.size() == 0) return;
+            for(int i=0; i<v1.size()-1; i++){
+                v1[i]->next = v1[i+1];
+            }
+            v.clear();
+            v.insert(v.begin(),v1.begin(), v1.end());
+            v1.clear();
+        }
+    }
+};
+
+//another solution with constant space
+class Solution1 {
+public:
+    void connect(TreeLinkNode *root) {
+        if(!root) return;
+        if(!root->left && !root->right){
+            return;
+        }
+        TreeLinkNode* start = root;
+        while(1){
+            TreeLinkNode* orgstart = start->left;
+            while(start){
+                TreeLinkNode* tleft = start->left;
+                TreeLinkNode* tright = start->right;
+            
+                if(tleft && tright){
+                    tleft->next = tright;
+                }
+
+                start = start->next;
+                if(tright && start){
+                    tright->next = start->left;
+                }
+            }
+            start = orgstart;
+            if(!start) break;
+        }
+    }
+};
