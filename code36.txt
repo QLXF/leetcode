@@ -1,0 +1,91 @@
+Given a binary tree, flatten it to a linked list in-place.
+For example, Given
+         1
+        / \
+       2   5
+      / \   \
+     3   4   6
+
+The flattened tree should look like:
+   1
+    \
+     2
+      \
+       3
+        \
+         4
+          \
+           5
+            \
+             6
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    void flatten(TreeNode *root) {
+        if(!root) return;
+        if(!root->left && !root->right) return;
+        
+        if(root->left) flatten(root->left);
+        if(root->right) flatten(root->right);
+        
+        TreeNode* last1 = root->left;
+        TreeNode* last2 = last1;
+        TreeNode* firstr = root->right;
+        while(last2 && last2->right){
+            last2 = last2->right;
+        }
+        
+        root->left = NULL;
+        if(last2){
+            last2->right = firstr;
+        }
+        if(last1){
+            root->right = last1;
+        }
+    }
+};
+
+//iterative solution
+class Solution {
+public:
+    void flatten(TreeNode *root) {
+        if(!root) return;
+        if(!root->left && !root->right) return;
+        
+        vector<TreeNode*> v1;
+        vector<TreeNode*> v2;
+        set<TreeNode*> s;
+        v1.push_back(root);
+        v2.push_back(root);
+        s.insert(root);
+        while(v1.size()>0){
+            TreeNode* n=v1.back();
+            if(n->left && s.find(n->left) == s.end()){
+                v1.push_back(n->left);
+                v2.push_back(n->left);
+                s.insert(n->left);
+            }
+            else if(n->right && s.find(n->right) == s.end()){
+                v1.push_back(n->right);
+                v2.push_back(n->right);
+                s.insert(n->right);
+            }
+            else{
+                v1.pop_back();
+            }
+        }
+        
+        for(int i=0; i<v2.size()-1; i++){
+            v2[i]->left = NULL;
+            v2[i]->right = v2[i+1];
+        }
+    }
+};
