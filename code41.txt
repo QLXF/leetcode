@@ -1,0 +1,62 @@
+Given a singly linked list where elements are sorted in ascending order, convert it to a height balanced BST.
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode *sortedListToBST(ListNode *head) {
+        if(!head) return NULL;
+        ListNode* head1 = head;
+        int len=1;
+        while(head->next){
+            head = head->next;
+            len++;
+        }
+        if(len == 1) return new TreeNode(head1->val);
+        return helper(head1, len);
+    }
+    
+    TreeNode* helper(ListNode* head, int len){
+        if(len == 0) return NULL;
+        if(len == 1) return new TreeNode(head->val);
+        if(len == 2){
+            TreeNode* n1 = new TreeNode(head->val);
+            TreeNode* n2 = new TreeNode(head->next->val);
+            n1->right = n2;
+            return n1;
+        }
+        if(len == 3){
+            TreeNode* n1 = new TreeNode(head->val);
+            TreeNode* n2 = new TreeNode(head->next->val);
+            TreeNode* n3 = new TreeNode(head->next->next->val);
+            n2->left = n1;
+            n2->right = n3;
+            return n2;           
+        }
+        
+        ListNode* head1 = head;
+        int f=1;
+        while(f<len/2){
+            head = head->next;
+            f++;
+        }
+        TreeNode* root = new TreeNode(head->val);
+        root->left = helper(head1, len/2-1);
+        root->right = helper(head->next, len-len/2);
+        return root;        
+    }
+};
