@@ -1,0 +1,112 @@
+Given a binary tree and a sum, find all root-to-leaf paths where each path's sum equals the given sum.
+For example:
+Given the below binary tree and sum = 22,
+              5
+             / \
+            4   8
+           /   / \
+          11  13  4
+         /  \    / \
+        7    2  5   1
+return
+[
+   [5,4,11,2],
+   [5,8,4,5]
+]
+
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<vector<int> > pathSum(TreeNode *root, int sum) {
+        vector<vector<int> > vv;
+        if(!root){
+            return vv;
+        }
+        if(!root->left && !root->right){
+            if(root->val == sum){
+                vector<int> v(1,sum);
+                vv.push_back(v);
+            }
+            return vv;
+        }
+        
+        vector<TreeNode*> v;
+        vector<int> v1;
+        set<TreeNode*> s;
+        v.push_back(root);
+        v1.push_back(root->val);
+        s.insert(root);
+        int leftover = sum - root->val;
+        while(v.size()>0){
+            TreeNode* n=v.back();
+            if(n->left && s.find(n->left) == s.end()){
+                v.push_back(n->left);
+                v1.push_back(n->left->val);
+                s.insert(n->left);
+                leftover -= n->left->val;
+            }
+            else if(n->right && s.find(n->right) == s.end()){
+                v.push_back(n->right);
+                v1.push_back(n->right->val);
+                s.insert(n->right);
+                leftover -= n->right->val;               
+            }
+            else if(!n->left && !n->right){
+                if(leftover == 0){
+                    vv.push_back(v1);
+                }
+                leftover += n->val;
+                v.pop_back();
+                v1.pop_back();
+            }
+            else{
+                leftover += n->val;
+                v.pop_back();
+                v1.pop_back();
+            }
+        }
+        return vv;
+    }
+};
+//recursive solution
+class Solution {
+public:
+    vector<vector<int> > pathSum(TreeNode *root, int sum) {
+        vector<vector<int> > vv;
+        if(!root){
+            return vv;
+        }
+        if(!root->left && !root->right){
+            if(root->val == sum){
+                vector<int> v(1,sum);
+                vv.push_back(v);
+            }
+            return vv;
+        }
+        if(root->left){
+            vector<vector<int> > vv1 = pathSum(root->left, sum-root->val);
+            for(int i=0; i<vv1.size(); i++){
+                vector<int> v(1, root->val);
+                v.insert(v.begin()+1, vv1[i].begin(), vv1[i].end());
+                vv.push_back(v);
+            }
+        }
+        if(root->right){
+            vector<vector<int> > vv1 = pathSum(root->right, sum-root->val);
+            for(int i=0; i<vv1.size(); i++){
+                vector<int> v(1, root->val);
+                v.insert(v.begin()+1, vv1[i].begin(), vv1[i].end());
+                vv.push_back(v);
+            }
+        }
+        return vv;
+    }
+};
