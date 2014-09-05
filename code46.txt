@@ -1,0 +1,68 @@
+Given a binary tree, return the zigzag level order traversal of its nodes' values. (ie, from left to right, then right to left for the next level and alternate between).
+For example: Given binary tree {3,9,20,#,#,15,7},
+    3
+   / \
+  9  20
+    /  \
+   15   7
+
+return its zigzag level order traversal as:
+[
+  [3],
+  [20,9],
+  [15,7]
+]
+
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<vector<int> > zigzagLevelOrder(TreeNode *root) {
+        vector<vector<int> > vv;
+        if(!root) return vv;
+        if(!root->left && !root->right) {
+            vector<int> v(1, root->val);
+            vv.push_back(v);
+            return vv;
+        }
+        
+        vector<TreeNode*> v1;
+        v1.push_back(root);
+        bool rev = false;
+        while(v1.size()>0){
+            vector<TreeNode*> v2;
+            vector<int> v;
+            for(int i=0; i<v1.size(); i++){
+                if(v1[i]->left){
+                    v2.push_back(v1[i]->left);
+                }
+                
+                if(v1[i]->right){
+                    v2.push_back(v1[i]->right);
+                }
+                
+                if(rev){
+                    v.insert(v.begin(), v1[i]->val);
+                }
+                else{
+                    v.push_back(v1[i]->val);
+                }
+            }
+            vv.push_back(v);
+            if(v2.size() == 0) break;
+            rev =!rev;
+            v.clear();
+            v1.clear();
+            v1.insert(v1.begin(), v2.begin(), v2.end());
+            v2.clear();
+        }
+        return vv;
+    }
+};
