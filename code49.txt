@@ -1,0 +1,97 @@
+Two elements of a binary search tree (BST) are swapped by mistake.
+Recover the tree without changing its structure
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    void recoverTree(TreeNode *root) {
+        if(!root)  return;
+        if(!root->left&&!root->right) return;
+        
+        if(root->left && root->right){
+            TreeNode* t1 = maxVal(root->left);
+            TreeNode* t2 = minVal(root->right);
+            if(root->val > t1->val && root->val <t2->val){
+                recoverTree(root->left);
+                recoverTree(root->right);
+                return;
+            }
+            if(t1->val > t2->val){
+                helper(t1, t2);
+                return;
+            }
+            if(root->val > t2->val){
+                helper(root, t2);
+                return;
+            }
+            if(root->val < t1->val){
+                helper(root, t1);
+            }
+
+        }
+        else if(root->left){
+            TreeNode* t1 = maxVal(root->left);
+            if(root->val > t1->val){
+                recoverTree(root->left);
+                return;
+            }
+            helper(root, t1);
+        }
+        else if(root->right){
+            TreeNode* t1 = minVal(root->right);
+            if(root->val < t1->val){
+                recoverTree(root->right);
+                return;
+            }
+            helper(root, t1);
+        }
+        
+    }
+    TreeNode* minVal(TreeNode* root){
+        if(!root) return NULL;
+        if(!root->left && !root->right) return root;
+        
+        TreeNode* t1 = minVal(root->left);
+        TreeNode* t2 = minVal(root->right);
+        int min= root->val;
+        TreeNode* t3 = root;
+        if(t1&&min > t1->val){
+            min = t1->val;
+            t3 = t1;
+        }
+        if(t2&&min > t2->val){
+            t3 = t2;
+        }
+        return t3;
+    }
+    TreeNode* maxVal(TreeNode* root){
+        if(!root) return NULL;
+        if(!root->left && !root->right) return root;
+        
+        TreeNode* t1 = maxVal(root->left);
+        TreeNode* t2 = maxVal(root->right);
+        int max= root->val;
+        TreeNode* t3 = root;
+        if(t1&&max < t1->val){
+            max = t1->val;
+            t3 = t1;
+        }
+        if(t2&&max < t2->val){
+            t3 = t2;
+        }
+        return t3;
+    }
+    
+    void helper(TreeNode* t1, TreeNode* t2){
+        int tmp = t1->val;
+        t1->val = t2->val;
+        t2->val = tmp;
+    }
+};
