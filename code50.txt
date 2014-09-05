@@ -69,3 +69,67 @@ public:
         return max;       
     }
 };
+//solution 2
+class Solution {
+public:
+    bool isValidBST(TreeNode *root) {
+        if(!root) return true;
+        if(!root->left && !root->right) return true;
+        
+        bool isgood = true;
+        if(root->left){
+            isgood = isValidBSTHelper(root->left, root->val);
+        }
+        if(!isgood) return false;
+        return isValidBSTHelper0(root->right, root->val);
+    }
+    
+     bool isValidBSTHelper0(TreeNode *root, int cap){//min
+        if(!root) return true;
+        bool isgood = root->val > cap;
+        if(!isgood) return false;
+        if(!root->left && !root->right){
+             return isgood;
+        }
+        
+        if(root->left){
+            isgood = isValidBSTHelper1(root->left, cap, root->val);
+        }
+        
+        if(!isgood) return false;
+        return isValidBSTHelper0(root->right, root->val);
+    }
+    
+    bool isValidBSTHelper(TreeNode *root, int cap){//max
+        if(!root) return true;
+        bool isgood = root->val < cap;
+        if(!isgood) return false;
+        if(!root->left && !root->right){
+             return isgood;
+        }
+        
+        if(root->left){
+            isgood = isValidBSTHelper(root->left, root->val);
+        }
+        
+        if(!isgood) return false;
+        return isValidBSTHelper1(root->right, root->val, cap);
+    }
+    
+    bool isValidBSTHelper1(TreeNode *root, int min, int max){
+        if(!root) return true;
+        bool isgood = (root->val > min && root->val < max);
+        if(!isgood) return false;
+        if(!root->left && !root->right){
+             return isgood;
+        }
+        
+        if(root->left){
+            isgood = isValidBSTHelper1(root->left, min, root->val);
+        }
+        
+        if(!isgood) return false;
+        return isValidBSTHelper1(root->right, root->val, max);       
+    }
+    
+};
