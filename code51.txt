@@ -1,0 +1,56 @@
+Given s1, s2, s3, find whether s3 is formed by the interleaving of s1 and s2.
+For example, Given: s1 = "aabcc", s2 = "dbbca",
+When s3 = "aadbbcbcac", return true. When s3 = "aadbbbaccc", return false.
+
+class Solution {
+public:
+    bool isInterleave(string s1, string s2, string s3) {
+        int len1 = s1.length();
+        int len2 = s2.length();
+        int len3 = s3.length();
+        if(len1+len2 != len3) return false;
+        if(len1==0 && len2 == 0){
+            return len3 == 0;
+        }
+        else if(len1 == 0){
+            return (s2.compare(s3) == 0);
+        }
+        else if(len2 == 0){
+            return (s1.compare(s3) == 0);
+        }
+        
+        vector<vector<bool> > vv(len1+1, vector<bool>(len2+1, false));
+        vv[0][0] = true;
+        for(int i=1; i<len1+1;i++){
+            string s11 = s1.substr(0, i);
+            string s31 = s3.substr(0, i);
+            vv[i][0] = (s11.compare(s31) == 0);
+        }
+        for(int i=1; i<len2+1;i++){
+            string s21 = s2.substr(0, i);
+            string s31 = s3.substr(0, i);
+            vv[0][i] = (s21.compare(s31) == 0);
+        }
+        
+        for(int i=1; i<=len1; i++){
+            for(int j=1; j<=len2;  j++){
+                if(vv[i][j-1] && s2[j-1] == s3[i+j-1]){
+                    vv[i][j] = true;
+                    continue;
+                }
+                
+                if(vv[i-1][j] && s1[i-1] == s3[i+j-1]){
+                    vv[i][j] = true;
+                    continue;
+                }
+                
+                if(vv[i-1][j-1] && ((s1[i-1] == s3[i+j-2] && s2[j-1] == s3[i+j-1]) || 
+                            (s1[i-1] == s3[i+j-1] && s2[j-1] == s3[i+j-2]))){
+                    vv[i][j] = true;            
+                }
+            }
+        }
+        
+        return vv[len1][len2];
+    }
+};
