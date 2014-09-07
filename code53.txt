@@ -1,0 +1,80 @@
+Given n, generate all structurally unique BST's (binary search trees) that store values 1...n.
+For example, Given n = 3, your program should return all 5 unique BST's shown below.
+   1         3     3      2      1
+    \       /     /      / \      \
+     3     2     1      1   3      2
+    /     /       \                 \
+   2     1         2                 3
+
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<TreeNode *> generateTrees(int n) {
+        vector<TreeNode*> v;
+        if(n==0) 
+        {
+            v.push_back(NULL);
+            return v;
+        }
+        return helper(1, n);
+    }
+    vector<TreeNode*> helper(int start, int end){
+        vector<TreeNode*> v;
+        if(start == end){
+            TreeNode *t = new TreeNode(start);
+            v.push_back(t);
+            return v;
+        }
+        if(start+1==end){
+            TreeNode *t1 = new TreeNode(start);
+            TreeNode *t2 = new TreeNode(end);
+            t2->left = t1;
+            v.push_back(t2);
+            t1 = new TreeNode(start);
+            t2 = new TreeNode(end);
+            t1->right = t2;
+            v.push_back(t1);
+            return v;
+        }
+        
+        for(int i=start; i<=end; i++){
+            if(i==start){
+                vector<TreeNode*> v1 = helper(start+1, end);
+                for(int j=0; j<v1.size();j++){
+                    TreeNode* t = new TreeNode(i);
+                    t->right = v1[j];
+                    v.push_back(t);
+                }
+            }
+            else if(i == end){
+                vector<TreeNode*> v1 = helper(start, end-1);
+                for(int j=0; j<v1.size();j++){
+                    TreeNode* t = new TreeNode(i);
+                    t->left = v1[j];
+                    v.push_back(t);
+                }
+            }
+            else{
+                vector<TreeNode*> v1 = helper(start, i-1);
+                vector<TreeNode*> v2 = helper(i+1, end);
+                for(int j=0; j<v1.size(); j++){
+                    for(int k=0; k<v2.size(); k++){
+                        TreeNode* t = new TreeNode(i);
+                        t->left = v1[j];
+                        t->right = v2[k];
+                        v.push_back(t);
+                    }
+                }
+            }
+        }
+        return v;
+    }
+};
