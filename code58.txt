@@ -1,0 +1,73 @@
+Given a collection of integers that might contain duplicates, S, return all possible subsets.
+Note:
+	•	Elements in a subset must be in non-descending order.
+	•	The solution set must not contain duplicate subsets.
+
+For example, If S = [1,2,2], a solution is:
+[
+  [2],
+  [1],
+  [1,2,2],
+  [2,2],
+  [1,2],
+  []
+]
+
+class Solution {
+public:
+vector<vector<int> > subsetsWithDup(vector<int> &s) {
+    vector<vector<int> > vv;
+    int size = (int)s.size();
+    if(size == 0){
+        vector<int> v;
+        vv.push_back(v);
+        return vv;
+    }
+    
+    sort(s.begin(), s.end());
+    helper(s, 0, vv);
+    vector<int> v;
+    vv.push_back(v);
+    return vv;
+}
+
+void helper(vector<int> &s, int start, vector<vector<int> > &vv ){
+    if(start == s.size()){
+        return;
+    }
+    if(start == s.size()-1){
+        vector<int> v(1, s[start]);
+        vv.push_back(v);
+        return;
+    }
+    int count = 1;
+    int next = start+1;
+    while(next<s.size()){
+        if(s[next] == s[next-1]){
+            next++;
+            count++;
+            continue;
+        }
+        break;
+    }
+    if(next != s.size()){
+        helper(s, next, vv);
+    }
+    vector<vector<int> > vv1;
+    vector<int> v;
+    for(int j=0; j<count; j++){
+        v.push_back(s[start]);
+        vv1.push_back(v);
+    }
+    int orgsize = (int)vv.size();
+    for(int i =0; i<vv1.size(); i++){
+        for(int j=0; j<orgsize; j++){
+            vector<int> v1 = vv1[i];
+            v1.insert(v1.end(), vv[j].begin(), vv[j].end());
+            vv.push_back(v1);
+        }
+    }
+    vv.insert(vv.end(), vv1.begin(), vv1.end());
+}
+
+};
