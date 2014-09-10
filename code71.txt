@@ -1,0 +1,31 @@
+Follow up for "Remove Duplicates": What if duplicates are allowed at most twice?
+For example, Given sorted array A = [1,1,1,2,2,3],
+Your function should return length = 5, and A is now [1,1,2,2,3].
+
+class Solution {
+public:
+    int removeDuplicates(int A[], int n) {
+        if(n<=2) return n;
+        
+        int f1 = 0;
+        int f2 = 1;
+        int count = 1;
+        while(f2 <n){
+            if(A[f2] == A[f1]){
+                if(count<2){
+                    f1++;
+                    A[f1] = A[f2];
+                }
+                count++;
+                f2++;
+                continue;
+            }
+            
+            f1++;
+            A[f1] = A[f2];
+            count = 1;
+            f2++;
+        }
+        return f1+1;
+    }
+};
