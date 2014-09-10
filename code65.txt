@@ -1,0 +1,43 @@
+Given n non-negative integers representing the histogram's bar height where the width of each bar is 1, find the area of largest rectangle in the histogram.
+For example,
+Given height = [2,1,5,6,2,3],
+return 10.
+class Solution {
+public:
+    int largestRectangleArea(vector<int> &arr) {
+        int size = arr.size();
+        if(size==0) return 0;
+        if(size==1) return arr[0];
+        
+        vector<int> arr2;
+        arr2.push_back(0);
+        int result = arr[0];
+        int i =1;
+        for(; i<size; i++){
+            if(arr[i] >= arr[arr2.back()]){
+                arr2.push_back(i);
+                continue;
+            }
+            
+            while(arr2.size()>0){
+                int tmp = arr[arr2.back()];
+                if(tmp > arr[i]){
+                    arr2.pop_back();
+                    int result1 = (i- (arr2.size() == 0 ?  0:(arr2.back()+1)) )*tmp;
+                    result = result > result1 ? result: result1;
+                    continue;
+                }
+                break;
+            }
+            arr2.push_back(i);
+        }
+        
+        while(arr2.size()>0){
+            int tmp = arr[arr2.back()];
+            arr2.pop_back();
+            int result1 = (i- (arr2.size() == 0 ?  0:(arr2.back()+1)))*tmp;
+            result = result > result1 ? result: result1;
+        }
+        return result;
+    }
+};
