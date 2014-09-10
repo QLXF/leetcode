@@ -1,0 +1,62 @@
+Follow up for "Search in Rotated Sorted Array":
+What if duplicates are allowed?
+
+class Solution {
+public:
+    bool search(int A[], int n, int target) {
+        if(n == 0) return false;
+        if(n==1) return A[0] == target;
+        return searchHelper(A,0, n-1, target);
+    }
+    
+    bool searchHelper(int A[], int start, int end, int target){
+        if(start == end){
+            return target == A[start];
+        }
+        else if(start + 1 == end){
+            return target == A[start] || target == A[end];
+        }
+        
+        int mid = start + (end-start)/2;
+        if(A[mid] == target) return true;
+        if(searchHelper(A, start, mid-1, target)) return true;
+        if(searchHelper(A, mid+1, end, target)) return true;
+        return false;
+    }
+};
+//solution 2
+class Solution {
+public:
+    bool search(int A[], int n, int target) {
+        if(n == 0) return false;
+        if(n==1) return A[0] == target;
+
+        int f1 = 0;
+        int f2 = n-1;
+        while(f1 < f2){
+            int mid = f1+(f2-f1)/2;
+            if(A[mid] == target) return true;
+            if(A[f1]<A[mid]){
+                if(target>=A[f1] && target <= A[mid]){
+                    f2=mid-1;
+                }
+                else{
+                    f1 = mid+1;
+                }
+            }
+            else if(A[f1] > A[mid]){
+                if(target <= A[f2] && target >= A[mid]){
+                    f1 = mid+1;
+                }
+                else{
+                    f2 = mid-1;
+                }
+            }
+            else {
+                f1 ++;
+            }
+        }
+        return A[f1] == target;
+    }
+    
+};
