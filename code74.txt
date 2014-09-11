@@ -1,0 +1,111 @@
+Given a string S and a string T, find the minimum window in S which will contain all the characters in T in complexity O(n).
+For example, S = "ADOBECODEBANC" T = "ABC"
+Minimum window is "BANC".
+Note: If there is no such window in S that covers all characters in T, return the emtpy string "".
+If there are multiple such windows, you are guaranteed that there will always be only one unique minimum window in S.
+
+class Solution {
+public:
+    string minWindow(string s, string t) {
+        int len1 = s.length();
+        int len2 = t.length();
+        
+        if(len2 == 0 || len1 == 0) return "";
+        map<char, int> mp;
+        for(int i=0; i<len2;i++){
+            mp[t[i]] +=1;
+        }
+        
+        int f1 = 0;
+        string result = "";
+        vector<pair<char, int> > v;
+        map<char,int> mp1;
+        set<char> st;
+        while(f1<len1){
+            if(mp.find(s[f1]) != mp.end()){
+                if(mp1.find(s[f1]) == mp1.end()){
+                    mp1.insert(make_pair(s[f1], 1));
+                    v.push_back(make_pair(s[f1], f1));
+                }
+                else{
+                    mp1[s[f1]] +=1;
+                    v.push_back(make_pair(s[f1], f1));
+                    if(mp1[s[f1]] > mp[s[f1]] && v[0].first == s[f1]){
+                        mp1[s[f1]] -=1;
+                        v.erase(v.begin());
+                    }
+                }
+                if(mp1[s[f1]] >= mp[s[f1]]){
+                    st.insert(s[f1]);
+                }
+                if(st.size() == mp.size()){
+                    if(result == ""){
+                        result = s.substr(v[0].second, v[v.size()-1].second - v[0].second+1);
+                    }
+                    else{
+                        result = result.length() < (v[v.size()-1].second - v[0].second+1) ? result : s.substr(v[0].second, v[v.size()-1].second - v[0].second+1);
+                    }
+                    if(f1 < len1){
+                        mp1[v[0].first] -=1;
+                        v.erase(v.begin());
+                        st.erase(v[0].first);
+                    }
+
+                }
+            }
+            f1++;
+        }
+        return result;
+    }
+};
+//solution 2
+
+class Solution {
+public:
+string minWindow(string s, string t) {
+    int len1 = (int)s.length();
+    int len2 = (int)t.length();
+    
+    if(len2 == 0 || len1 == 0) return "";
+    vector<int> v(256, 0);
+    vector<bool> v1(256,false);
+    vector<int> v2(256, 0);
+    for(int i=0; i<len2;i++){
+        v[t[i]] +=1;
+        v1[t[i]] = true;
+    }
+    
+    int start=0;
+    int end=-1;
+    int count = len2;
+    string s1="";
+    while(end<len1){
+        if(count>0){
+            end++;
+            v2[s[end]]++;
+            if(v1[s[end]] && start == -1){
+                start = end;
+            }
+            if(v1[s[end]] && v2[s[end]] <= v[s[end]]){
+                count--;
+            }
+        }
+        else{
+            if(s1==""){
+                s1 = s.substr(start, end-start+1);
+            }
+            else{
+                s1 = s1.length() < (end-start+1) ? s1:s.substr(start, end-start+1);
+            }
+            
+            v2[s[start]]--;
+            if(v1[s[start]]&& v2[s[start]] < v[s[start]]){
+                count++;
+            }
+            start++;
+        }
+    }
+    return s1;
+    
+}
+};
