@@ -1,0 +1,48 @@
+Given two binary strings, return their sum (also a binary string).
+For example, a = "11" b = "1" Return "100".
+
+class Solution {
+public:
+    string addBinary(string a, string b) {
+        int len1 = a.length();
+        int len2 = b.length();
+    
+        if(len1 == 0){
+            return b;
+        }
+        else if(len2 == 0){
+            return a;
+        }
+        
+        int next = 0;
+        int f1 = len1-1;
+        int f2 = len2-1;
+        string ab = "";
+        while(f1>=0 && f2>=0){
+            int v1 = (int)a[f1]-'0';
+            int v2 = (int)b[f2]-'0';
+            int v3 = v1+v2+next;
+            next = v3/2;
+            ab = (char)((v3)%2 +'0') + ab;
+            f1--;
+            f2--;
+        }
+        
+        while(f1>=0){
+            int v1 = (int)a[f1]-'0';
+            int v3 = v1+next;
+            next = v3/2;
+            ab = (char)((v3)%2+'0') + ab; 
+            f1--;
+        }
+        while(f2>=0){
+            int v2 = (int)b[f2]-'0';
+            int v3 = v2+next;
+            next = v3/2;
+            ab = (char)((v3)%2+'0') + ab; 
+            f2--;
+        }    
+        ab = (next == 0 ? ab: ((char)(next+'0') + ab));
+        return ab;
+    }
+};
