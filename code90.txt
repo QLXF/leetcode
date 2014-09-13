@@ -1,0 +1,49 @@
+Given a collection of intervals, merge all overlapping intervals.
+For example, Given [1,3],[2,6],[8,10],[15,18], return [1,6],[8,10],[15,18].
+
+/**
+ * Definition for an interval.
+ * struct Interval {
+ *     int start;
+ *     int end;
+ *     Interval() : start(0), end(0) {}
+ *     Interval(int s, int e) : start(s), end(e) {}
+ * };
+ */
+     bool compare(Interval i1, Interval i2){
+         return i1.start < i2.start || (i1.start == i2.start && i1.end<i2.end);
+     }
+class Solution {
+public:
+
+     bool overlap(Interval i1, Interval i2){
+         return !(i1.end < i2.start || i2.end < i1.start);
+     }
+     
+    vector<Interval> merge(vector<Interval> &intervals) {
+        int size = intervals.size();
+        if(size <= 1) return intervals;
+        
+        vector<Interval> intervals1;
+        sort(intervals.begin(), intervals.end(), compare);
+        
+        Interval newint = intervals[0];
+        intervals.erase(intervals.begin());
+        for(vector<Interval>::iterator it = intervals.begin(); it!=intervals.end();){
+            Interval i1 = *it;
+            if(overlap(i1, newint)){
+                intervals.erase(it);
+                newint.start = i1.start < newint.start ? i1.start : newint.start;
+                newint.end = i1.end > newint.end ? i1.end : newint.end;
+            }
+            else
+            {
+                intervals1.push_back(newint);
+                newint = *it;
+                it++;
+            }
+        }
+        intervals1.push_back(newint);
+        return intervals1;
+    }
+};
