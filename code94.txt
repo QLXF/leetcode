@@ -1,0 +1,64 @@
+ N-Queens
+class Solution {
+public:
+vector<vector<string> > solveNQueens(int n) {
+    vector<vector<string> > vv;
+    if(n==2 || n==3) return vv;
+    string s="";
+    for(int i=0; i<n; i++){
+        s +='.';
+    }
+    
+    vector<int> set1;
+    return helper(1, n, set1, s);
+}
+
+vector<int> location(int k, int n, vector<int> &v1){
+    set<int> s;
+    for(int i=0;i<n; i++){
+        s.insert(i);
+    }
+    for(int i=0; i<v1.size(); i++){
+        s.erase(v1[i]);
+        int i1= v1[i]-(k-1-i);
+        s.erase(i1);
+        int i2 = k-1-i+v1[i];
+        s.erase(i2);
+    }
+    vector<int> v2;
+    for(set<int>::iterator it = s.begin(); it!= s.end(); it++){
+        v2.push_back(*it);
+    }
+    return v2;
+}
+
+vector<vector<string> > helper(int k, int n, vector<int> &v1, string &s){
+    vector<vector<string> > vv;
+    vector<int> lc = location(k,n,v1);
+    
+    if(k==n){
+        for(int i=0; i<lc.size(); i++){
+            vector<string> v(1,getString(lc[i],s));
+            vv.push_back(v);
+        }
+        return vv;
+    }
+
+    for(int i=0; i<lc.size(); i++){
+        string s1 = getString(lc[i],s);
+        v1.push_back(lc[i]);
+        vector<vector<string> > vv1 = helper(k+1,n, v1, s);
+        for(int j=0; j<vv1.size();j++){
+            vv1[j].insert(vv1[j].begin(), s1);
+            vv.push_back(vv1[j]);
+        }
+        v1.pop_back();
+    }
+    return vv;
+}
+string getString(int k, string s){
+    string s1 = s;
+    s1[k] = 'Q';
+    return s1;
+}
+};
