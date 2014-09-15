@@ -1,0 +1,39 @@
+Given a collection of numbers, return all possible permutations.
+For example, [1,2,3] have the following permutations: [1,2,3], [1,3,2], [2,1,3], [2,3,1], [3,1,2], and [3,2,1].
+
+class Solution {
+public:
+    vector<vector<int> > permute(vector<int> &num) {
+        vector<vector<int> > vv;
+        int size = num.size();
+        if(size==0) return vv;
+        if(size==1) {
+            vv.push_back(num);
+        }
+        return helper(num, 0);
+    }
+    
+    vector<vector<int> > helper(vector<int> &num, int start){
+        vector<vector<int> > vv;
+        if(start == num.size()-1){
+            vv.push_back(vector<int>(1, num[start]));
+            return vv;
+        }
+        
+        for(int i=start; i<num.size(); i++){
+            int tmp = num[i];
+            num.erase(num.begin()+i);
+            num.insert(num.begin(), tmp);
+            vector<vector<int> > vv1 = helper(num, start+1);
+            for(int j=0;j<vv1.size(); j++){
+                vector<int> v(1, tmp);
+                v.insert(v.end(), vv1[j].begin(), vv1[j].end());
+                vv.push_back(v);
+            }
+            num.erase(num.begin());
+            num.insert(num.begin()+i, tmp);
+        }
+        return vv;
+    }
+};
+//solution 2
