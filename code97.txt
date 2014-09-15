@@ -1,0 +1,37 @@
+Given an array of strings, return all groups of strings that are anagrams.
+Note: All inputs will be in lower-case.
+
+class Solution {
+public:
+    vector<string> anagrams(vector<string> &strs) {
+        vector<string> ana;
+        int size = strs.size();
+        if(size<=1) return ana;
+        
+        map<string, vector<string> > mp;
+        for(int i=0; i<size; i++){
+            string s1=strs[i];
+            if(s1==""){
+                ana.push_back(s1);
+                continue;
+            }
+            sort(s1.begin(), s1.end());
+            if(mp.find(s1) != mp.end()){
+                mp[s1].push_back(strs[i]);
+            }
+            else{
+                mp.insert(make_pair(s1,vector<string>(1,strs[i])));
+            }
+        }
+        if(ana.size()<=1) ana.clear();
+        
+        for(map<string, vector<string> >::iterator it = mp.begin(); it!=mp.end(); it++){
+            if(it->second.size()>1){
+                ana.insert(ana.end(),it->second.begin(), it->second.end());
+            }
+        }
+        
+        return ana;
+    }
+    
+};
