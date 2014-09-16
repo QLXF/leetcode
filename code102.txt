@@ -1,0 +1,69 @@
+Given two numbers represented as strings, return multiplication of the numbers as a string.
+Note: The numbers can be arbitrarily large and are non-negative.
+
+class Solution {
+public:
+    string multiply(string num1, string num2) {
+        int len1=(int)num1.length();
+        int len2=(int)num2.length();
+        if(len1 ==0 || (num1[0] == '0')) return "0";
+        if(len2 == 0|| (num2[0] == '0')) return "0";
+        
+        if(len1<len2){
+            string tmp = num1;
+            num1=num2;
+            num2=tmp;
+            
+            int tmp1 =len2;
+            len2=len1;
+            len1=tmp1;
+        }
+        
+        vector<int> v1;
+        vector<int> v2;
+        for(int j=len2-1;j>=0;j--){
+            int a1 = num2[j]-'0';
+            int next =0;
+            int k=j;
+            while(k<len2-1){
+                v2.push_back(0);
+                k++;
+            }
+            for(int i=len1-1; i>=0; i--){
+                int a2=num1[i]-'0';
+                int result = a1*a2+next;
+                next = result/10;
+                v2.insert(v2.begin(),result%10);
+            }
+            if(next>0) v2.insert(v2.begin(), next);
+            next=0;
+            int f1=(int)v1.size()-1;
+            int f2=(int)v2.size()-1;
+            while(f1>=0 && f2>=0){
+                int plus = v1[f1]+v2[f2]+next;
+                next = plus/10;
+                v1[f1]=plus%10;
+                f1--;f2--;
+            }
+            while(f1>=0){
+                int plus = v1[f1]+next;
+                next = plus/10;
+                v1[f1]=plus%10;
+                f1--;
+            }
+            while(f2>=0){
+                int plus = v2[f2]+next;
+                next = plus/10;
+                v1.insert(v1.begin(), plus%10);
+                f2--;
+            }
+            if(next > 0) v1.insert(v1.begin(), next);
+            v2.clear();
+        }
+        string s1="";
+        for(int i=0; i<v1.size(); i++){
+            s1 += (v1[i]+'0');
+        }
+        return s1;
+    }
+};
