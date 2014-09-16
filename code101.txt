@@ -1,0 +1,43 @@
+Implement wildcard pattern matching with support for '?' and '*'.
+//solution 1
+bool isMatch(const char *s, const char *p) {
+    if(*s=='\0' && *p=='\0') return true;
+    if(*s=='\0'){
+        while(*p == '*'){
+            p++;
+        }
+        return *p=='\0'? true :false;
+    }
+    
+    if(*p=='\0' && *s !='\0'){
+        return false;
+    }
+    
+    while(*s != '\0' && *p !='\0'){
+        if(*s == *p){
+            s++;
+            p++;
+        }
+        else if(*p=='?'){
+            s++;p++;
+        }
+        else if(*p=='*'){
+            while(1){
+             if(isMatch(s, p+1)){
+                 return true;
+             }
+             if(*s==*(s+1)){
+                s++;
+             }
+             else{
+                break;
+             }
+            }
+            return isMatch(s+1,p+1);
+        }
+        else{
+            return false;
+        }
+    }
+    return isMatch(s,p);
+}
