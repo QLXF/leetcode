@@ -1,0 +1,45 @@
+Given an array of integers, find two numbers such that they add up to a specific target number.
+The function twoSum should return indices of the two numbers such that they add up to the target, where index1 must be less than index2. Please note that your returned answers (both index1 and index2) are not zero-based.
+You may assume that each input would have exactly one solution.
+
+class Solution {
+public:
+    vector<int> twoSum(vector<int> &numbers, int target) {
+        vector<int> v;
+        int size = numbers.size();
+        
+        vector<int> numbers1(numbers.begin(), numbers.end());
+        sort(numbers.begin(), numbers.end());
+        int f1=0;
+        int f2=size-1;
+        while(f1<f2){
+            if(numbers[f1]+numbers[f2] == target){
+                break;
+            }
+            else if(numbers[f1]+numbers[f2] <target){
+                f1++;
+            }
+            else{
+                f2--;
+            }
+        }
+        
+        bool found1=false;
+        bool found2=false;
+        for(int i=0; i<numbers1.size(); i++){
+            if(numbers1[i] == numbers[f1] && !found1){
+                found1=true;
+                v.push_back(i+1);
+                continue;
+            }
+            if(numbers1[i] == numbers[f2] && !found2){
+                found2=true;
+                v.push_back(i+1);
+            }
+            if(found1 && found2) break;
+        }
+        
+        sort(v.begin(), v.end());
+        return v;
+    }
+};
