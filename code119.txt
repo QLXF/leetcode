@@ -38,3 +38,18 @@ public:
         return head;
     }
 };
+
+class Solution {
+public:
+    ListNode *swapPairs(ListNode *head) {
+        if(!head || !head->next) return head;
+
+        ListNode *l1 = head->next;
+        ListNode *l2 =swapPairs(l1->next);
+        ListNode *l3 = head;
+        head = l1;
+        l1->next = l3;
+        l3->next = l2;
+        return head;
+    }
+};
