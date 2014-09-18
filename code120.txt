@@ -41,3 +41,54 @@ public:
         return head;
     }
 };
+//solution 2 -iterative
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode *reverseKGroup(ListNode *head, int k) {
+        if(!head || !head->next || k==1) return head;
+        
+        ListNode *f1;
+        ListNode *f=NULL;
+        ListNode *fh=NULL;
+        while(head){
+            f1=head;
+            int count = 1;
+            while(f1->next && count<k){
+                f1=f1->next;
+                count++;
+            }
+            if(count < k){
+                return !f ? head : f;
+            };
+            ListNode *f0 = f1;
+            f1 = head;
+            ListNode *f2=f1->next;
+            
+            while(f1!= f0){
+                ListNode *f3 = f2->next;
+                f2->next = f1;
+                f1 = f2;
+                f2 = f3;
+            }
+            if(!f){
+                f=f1;fh=head;
+            }
+            else{
+                fh->next = f1;
+                fh = head;
+            }
+            
+            head->next = f2;
+            head = head->next;
+        }
+        return f;
+    }
+};
