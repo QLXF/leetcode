@@ -1,0 +1,42 @@
+Implement strStr().
+Returns a pointer to the first occurrence of needle in haystack, or null if needle is not part of haystack.
+
+class Solution {
+public:
+    char *strStr(char *haystack, char *needle) {
+        if(!needle || !*needle) return haystack;
+        if(!haystack || !*haystack) return NULL;
+        
+        
+        char *f1 = needle;
+        char *f2 = haystack;
+        char *result = f2;
+        f1=needle;
+        while(*f1 && *f2)
+        {
+            if(*f1 == *f2){
+                f1++; f2++;
+            }
+            else{
+                f2++;result++;
+                while(*f2){
+                    if(*f2==*f1){
+                        break;
+                    }
+                    f2++;
+                    result++;
+                }
+                if(!*f2) return NULL;
+                f2=result;
+                f1 = needle;
+            }
+        }
+        
+        if(!*f1){
+            return result;
+        }
+        else{
+            return NULL;
+        }
+    }
+};
