@@ -1,0 +1,67 @@
+You are given a string, S, and a list of words, L, that are all of the same length. Find all starting indices of substring(s) in S that is a concatenation of each word in L exactly once and without any intervening characters.
+For example, given: S: "barfoothefoobarman" L: ["foo", "bar"]
+You should return the indices: [0,9].
+
+class Solution {
+public:
+    vector<int> findSubstring(string s, vector<string> &v) {
+    vector<int> vi;
+    int len = (int)s.length();
+    int size = (int)v.size();
+    if(size == 0) return vi;
+    if(len == 0) return vi;
+    int len1=(int)v[0].length();
+    if(len < size*len1) return vi;
+    map<string, int> mp;
+    for(int i=0; i<size; i++){
+        mp[v[i]] +=1;
+    }
+    for(int i=0; i<len1; i++){
+        int count =0;
+        int last = i-1;
+        int j=i;
+        map<string, int> mp1(mp);
+        while(j<len){
+            string s1=s.substr(j, len1);
+            if(mp1.find(s1) != mp1.end()){
+                if(last == i-1){
+                    last = j;
+                }
+                if(mp1[s1] > 0){
+                    mp1[s1] -=1;
+                    j +=len1;
+                    count++;
+                }
+                else{
+                    string s2=s.substr(last, len1);
+                    while(s1 != s2){
+                        last += len1;
+                        count--;
+                        mp1[s2] +=1;
+                        s2 = s.substr(last, len1);
+                    }
+                    last +=len1;
+                    j += len1;
+                }
+                
+                if(count == size){
+                    vi.push_back(last);
+                    count = 0;
+                    j +=len1;
+                    last = j;
+                    mp1.clear();
+                    mp1.insert(mp.begin(), mp.end());
+                }
+            }
+            else{
+                j +=len1;
+                last = j;
+                count = 0;
+                mp1.clear();
+                mp1.insert(mp.begin(), mp.end());
+            }
+        }
+    }
+    return vi;
+    }
+};
