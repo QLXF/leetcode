@@ -1,0 +1,79 @@
+Given a sorted array of integers, find the starting and ending position of a given target value.
+Your algorithm's runtime complexity must be in the order of O(log n).
+If the target is not found in the array, return [-1, -1].
+For example, Given [5, 7, 7, 8, 8, 10] and target value 8, return [3, 4].
+
+class Solution {
+public:
+    vector<int> searchRange(int A[], int n, int target) {
+        vector<int> v(2,-1);
+        if(n==0) return v;
+        if(n==1 && A[0] == target){
+            v[0]=v[1]=0;
+            return v;
+        }
+        
+        int f1=0;
+        int f2=n-1;
+        int low = -1;
+        int high = -1;
+        while(f1<f2){
+            int middle = f1+(f2-f1)/2;
+            if(A[middle] == target){
+                v[0]= v[1]=middle;
+                low = searchRangeHelper(A, f1, middle-1, target, false);
+                high = searchRangeHelper(A, middle+1, n-1,target, true);
+                if(low != -1){
+                    v[0]= low;
+                }
+                if(high != -1){
+                    v[1] = high;
+                }
+                break;
+            }
+            else if(A[middle] > target){
+                f2 = middle-1;
+            }
+            else{
+                f1 = middle+1;
+            }
+        }
+        if(v[0] == -1){
+            if(A[f1] == target){
+                v[0]=v[1]=f1;
+            }
+        }
+        return v;
+    }
+    
+    int searchRangeHelper(int A[], int start, int end, int target, bool upper){
+        if(start > end) return -1;
+        if(start == end){
+            return A[start] == target? start:-1;
+        }
+        
+        int f1=start; 
+        int f2=end;
+        int result = -1;
+        while(f1<f2){
+            int middle = f1+(f2-f1)/2;
+            if(A[middle] == target){
+                if(upper){
+                    f1 = middle+1;
+                }
+                else{
+                    f2 = middle-1;
+                }
+                result = middle;
+            }
+            else if(A[middle] > target){
+                f2= middle-1;
+            }
+            else {
+                f1= middle+1;
+            }
+        }
+        
+        return target == A[f1] ? f1: result;
+    }
+};
