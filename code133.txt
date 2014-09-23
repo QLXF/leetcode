@@ -1,0 +1,71 @@
+The set [1,2,3,…,n] contains a total of n! unique permutations.
+By listing and labeling all of the permutations in order, We get the following sequence (ie, for n = 3):
+	1.	"123"
+	2.	"132"
+	3.	"213"
+	4.	"231"
+	5.	"312"
+	6.	"321"
+
+Given n and k, return the kth permutation sequence.
+Note: Given n will be between 1 and 9 inclusive.
+
+class Solution {
+public:
+    string getPermutation(int n, int k) {
+        if(n==0) return "";
+        if(n==1) return "1";
+        string s="";
+        for(char c='1'; c<='0'+n; c++){
+            s += c;
+        }
+        vector<int> v;
+        v.push_back(1);
+        for(int i=2; i<=n; i++){
+            v.push_back(v.back()*i);
+        }
+        if(k>=v.back()){
+            reverse(s,0,n-1);
+            return s;
+        }
+        return helper(s, k, v);
+    }
+    void reverse(string &s, int start, int end){
+        while(start < end){
+            char tmp = s[start];
+            s[start] = s[end];
+            s[end] = tmp;
+            start++; end--;
+        }
+    }
+    void swap(string &s, int f1, int f2){
+        char tmp = s[f1];
+        s[f1] = s[f2];
+        s[f2] = tmp;
+    }
+    string helper(string s, int n, vector<int> &v){
+        if(n==1) return s;
+        
+        int k=0;
+        int len = (int)s.length();
+        for(int i=0; i<v.size(); i++){
+            if(n == v[i]){
+                reverse(s,(int)s.length()-1-i, len-1);
+                return s;
+            }
+            if(n < v[i] && n > v[i-1]){
+                for(int j=len-i; j<len; j++){
+                    if(s[j] > s[len-i-1]){
+                        swap(s, len-i-1, j);
+                        break;
+                    }
+                }
+                k = v[i-1];
+                break;
+            }
+        }
+        n = n-k;
+        return helper(s, n, v);
+    }
+
+};
