@@ -1,0 +1,51 @@
+Given a collection of candidate numbers (C) and a target number (T), find all unique combinations in Cwhere the candidate numbers sums to T.
+Each number in C may only be used once in the combination.
+Note:
+	•	All numbers (including target) will be positive integers.
+	•	Elements in a combination (a1, a2, … , ak) must be in non-descending order. (ie, a1 ≤ a2 ≤ … ≤ ak).
+	•	The solution set must not contain duplicate combinations.
+
+For example, given candidate set 10,1,2,7,6,1,5 and target 8,  A solution set is:  [1, 7]  [1, 2, 5]  [2, 6]  [1, 1, 6] 
+
+class Solution {
+public:
+    vector<vector<int> > combinationSum2(vector<int> &num, int target) {
+        vector<vector<int> > vv;
+        int size = num.size();
+        if(size ==0) return vv;
+        sort(num.begin(), num.end());
+        vv = helper(num, 0, target);
+        return vv;
+    }
+    
+    vector<vector<int> > helper(vector<int> &num, int start, int target){
+        vector<vector<int> > vv;
+        if(start == num.size()) return vv;
+        if(num[start] == target){
+            vv.push_back(vector<int>(1, target));
+            return vv;
+        }
+        if(num[start] > target || start == num.size()-1){
+            return vv;
+        }
+        
+        for(int i=start; i<num.size(); i++){
+            if(num[i] == target){
+                vv.push_back(vector<int>(1, target));
+                break;
+            }
+            if(num[i] > target){
+                break;
+            }
+            if(i>start && num[i] == num[i-1]){
+                continue;
+            }
+            vector<vector<int> > vv1 = helper(num, i+1, target-num[i]);
+            for(int j=0; j<vv1.size(); j++){
+               vv1[j].insert(vv1[j].begin(), num[i]);
+               vv.push_back(vv1[j]);
+            }  
+        }
+        return vv;
+    }
+};
