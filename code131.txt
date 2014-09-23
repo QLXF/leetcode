@@ -1,0 +1,47 @@
+
+Given a set of candidate numbers (C) and a target number (T), find all unique combinations in C where the candidate numbers sums to T.
+The same repeated number may be chosen from C unlimited number of times.
+Note:
+	•	All numbers (including target) will be positive integers.
+	•	Elements in a combination (a1, a2, … , ak) must be in non-descending order. (ie, a1 ≤ a2 ≤ … ≤ ak).
+	•	The solution set must not contain duplicate combinations.
+
+For example, given candidate set 2,3,6,7 and target 7,  A solution set is:  [7]  [2, 2, 3] 
+class Solution {
+public:
+    vector<vector<int> > combinationSum(vector<int> &v, int target) {
+        vector<vector<int> > vv;
+        int size = v.size();
+        if(size == 0) return vv;
+        sort(v.begin(), v.end());
+        vv = helper(v, 0, target);
+        return vv;
+    }
+    
+    vector<vector<int> > helper(vector<int> &v, int start, int target){
+        vector<vector<int> > vv;
+        if(target == v[start]){
+            vv.push_back(vector<int>(1, v[start]));
+            return vv;
+        }        
+        if(v[start]>target){
+            return vv;
+        }
+
+        for(int i=start; i<v.size(); i++){
+            if(target == v[i]){
+                vv.push_back(vector<int>(1, v[i]));
+                break;
+            }
+            if(target < v[i]){
+                break;
+            }
+            vector<vector<int> > vv1= helper(v,i,target-v[i]);
+            for(int j=0; j<vv1.size();j++){
+                vv1[j].insert(vv1[j].begin(), v[i]);
+                vv.push_back(vv1[j]);
+            }
+        }
+        return vv;
+    }
+};
