@@ -37,3 +37,33 @@ int maxProduct(int A[], int n) {
     return result;
 }
 };
+
+//solution 2
+class Solution {
+public:
+    int maxProduct(int A[], int n) {
+        if(n==0) return 0;
+        if(n==1) return A[0];
+        
+        int min=A[0];
+        int max=A[0];
+        int result = max;
+        for(int i=1; i<n; i++){
+            if(A[i]==0){
+                min = 0;
+                max = 0;
+                result = result > 0 ? result : 0;
+            }
+            else{
+                int tmp1 = min*A[i];
+                int tmp2 = max*A[i];
+                max = tmp1 > tmp2 ? tmp1 : tmp2;
+                min = tmp1 < tmp2 ? tmp1 : tmp2;
+                min = min < A[i] ? min : A[i];
+                max = max > A[i] ? max : A[i];
+                result  = result > max ? result :max;
+            }
+        }
+        return result;
+    }
+};
