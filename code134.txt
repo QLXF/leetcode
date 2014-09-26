@@ -1,0 +1,70 @@
+Given an array of words and a length L, format the text such that each line has exactly L characters and is fully (left and right) justified.
+You should pack your words in a greedy approach; that is, pack as many words as you can in each line. Pad extra spaces ' ' when necessary so that each line has exactly L characters.
+Extra spaces between words should be distributed as evenly as possible. If the number of spaces on a line do not divide evenly between words, the empty slots on the left will be assigned more spaces than the slots on the right.
+For the last line of text, it should be left justified and no extra space is inserted between words.
+For example, words: ["This", "is", "an", "example", "of", "text", "justification."] L: 16.
+
+class Solution {
+public:
+    vector<string> fullJustify(vector<string> &words, int L) {
+        int size = (int)words.size();
+        if(size == 0 || L==0) return words;
+        vector<string> v;
+        int i=0;
+        while(i<size){
+            string s = "";
+            int count = 0;
+            int len =0;
+            int k=i;
+            while(i<size && s.length() < L){
+                if((s.length() + words[i].length() )<=L){
+                    s += words[i];
+                    count++;
+                    len += words[i].length();
+                    i++;
+                    if(s.length() == L){
+                        break;
+                    }
+                    else{
+                        s += ' ';
+                    }
+                    continue;
+                }
+                break;
+            }
+            
+            if(i < size){
+                if(count == 1){
+                    s = s + getSpace(L-(int)s.length());
+                }
+                else{
+                    int space = (L-len)/(count-1);
+                    int first = L-len-(count-1)*space;
+                    string s1 = words[k]+getSpace(space+ ((first>0) ? 1:0));
+                    first--;
+                    for(int j=k+1; j<i-1; j++){
+                        s1 += words[j]+getSpace(space+((first>0) ? 1:0));
+                        first--;
+                    }
+                    s1 += words[i-1];
+                    s = s1;
+                }
+                v.push_back(s);
+            }
+            else{
+                s = s + getSpace(L-(int)s.length());
+                v.push_back(s);
+                break;
+            }
+        }
+        return v;
+    }
+    
+    string getSpace(int n){
+        string s ="";
+        for(int i=0; i<n; i++){
+            s += ' ';
+        }
+        return s;
+    }
+};
