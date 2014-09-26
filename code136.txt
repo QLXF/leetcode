@@ -1,0 +1,88 @@
+Given an integer, convert it to a roman numeral.
+Input is guaranteed to be within the range from 1 to 3999.
+
+class Solution {
+public:
+    string intToRoman(int num) {
+        map<int, char> mp;
+        mp.insert(make_pair(1,'I'));
+        mp.insert(make_pair(5,'V'));
+        mp.insert(make_pair(10,'X'));
+        mp.insert(make_pair(50,'L'));
+        mp.insert(make_pair(100,'C'));
+        mp.insert(make_pair(500,'D'));
+        mp.insert(make_pair(1000,'M'));
+        
+        
+        string s = "";
+        int cur = 1;
+        int num1 = num;
+        while(num1>=10){
+            num1 = num1/10;
+            cur *=10;
+        }
+        
+        while(num > 0){
+            int last = (num/cur)*cur;
+            if(mp.find(last) != mp.end()){
+                s += mp[last];
+            }
+            else{
+                if(last > 1 && last < 10){
+                    if(last <=3){
+                        s += getStr(last, "" , 'I');
+                    }
+                    else if(last >=4 && last <=8){
+                        s += getStr(last-5, "V",'I');
+                    }
+                    else{
+                        s += getStr(last-10, "X", 'I');
+                    }
+                }
+                else if(last > 10 && last < 100){
+                    if(last <=30){
+                        s += getStr(last/10, "", 'X');
+                    }
+                    else if(last >=40 && last <=80){
+                        s += getStr((last-50)/10, "L",'X');
+                    }
+                    else{
+                        s += getStr((last-100)/10, "C", 'X');
+                    }
+                }
+                else if(last > 100 && last < 1000){
+                    if(last <=300){
+                        s += getStr(last/100, "", 'C');
+                    }
+                    else if(last >=400 && last <=800){
+                        s += getStr((last-500)/100, "D",'C');
+                    }
+                    else{
+                        s += getStr((last-1000)/100, "M", 'C');
+                    }
+                }
+                else{
+                    s += getStr(last/1000, "",'M');
+                }
+            }
+            num = num - last;
+            cur =cur/10;
+        }
+        return s;
+    }
+    
+    string getStr(int n, string c, char c1){
+        string s = c;
+        bool neg = (n<0);
+        n = abs(n);
+        for(int i=0; i<n; i++){
+            if(neg){
+                s = c1+s;
+            }
+            else{
+                s += c1;
+            }
+        }
+        return s;
+    }
+};
