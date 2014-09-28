@@ -1,0 +1,67 @@
+Write a program to solve a Sudoku puzzle by filling the empty cells.
+Empty cells are indicated by the character '.'.
+You may assume that there will be only one unique solution.
+
+class Solution {
+public:
+    void solveSudoku(vector<vector<char> > &board) {
+        set<char> s;
+        for(char i='1'; i<='9'; i++){
+            s.insert(i);
+        }
+        vector<set<char> > set1(9, s);
+        vector<set<char> > set2(9, s);
+        vector<vector<set<char> > > set3(3, vector<set<char> >(3, s));
+        vector<vector<char> > board1(board);
+        for(int i=0; i<9; i++){
+            for(int j=0; j<9; j++){
+                set1[i].erase(board[i][j]);
+                set2[j].erase(board[i][j]);
+                set3[i/3][j/3].erase(board[i][j]);
+            }
+        }
+        helper(board, 0,0,set1,set2,set3); 
+    }
+    bool helper(vector<vector<char> > &board, int i, int j, vector<set<char> > &set1, vector<set<char> > &set2, vector<vector<set<char> > > &set3){
+        if(i==8 && j==8){
+            if(board[i][j] == '.'){
+                if(set1[8].size() == 1 && set2[8].size() == 1 && set3[2][2].size() == 1){
+                    char c1=*(set1[8].begin());
+                    char c2=*(set2[8].begin());
+                    char c3=*(set3[2][2].begin());
+                    if(c1==c2 && c2== c3){
+                        board[i][j] = c1;
+                        return true;
+                    }
+                }
+                return false;
+            }
+            return true;
+        }
+        
+        int inext = i+(j/8 == 0 ? 0:1);
+        int jnext = (j/8 == 0 ? j+1:0);
+        if(board[i][j] == '.'){
+            for(char k='1'; k<='9'; k=k+1){
+                if(set1[i].find(k) != set1[i].end() &&
+                   set2[j].find(k) != set2[j].end() && 
+                   set3[i/3][j/3].find(k) != set3[i/3][j/3].end()){
+                       set1[i].erase(k);
+                       set2[j].erase(k);
+                       set3[i/3][j/3].erase(k);
+                       if(helper(board, inext, jnext, set1, set2, set3)){
+                          board[i][j] = k;
+                          return true;
+                       }
+                       set1[i].insert(k);
+                       set2[j].insert(k);
+                       set3[i/3][j/3].insert(k);
+                   }
+            }
+            return false;
+        }
+        else{
+           return helper(board, inext, jnext, set1, set2, set3);
+        }
+    }
+};
