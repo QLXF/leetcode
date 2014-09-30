@@ -1,0 +1,72 @@
+Given two words (start and end), and a dictionary, find all shortest transformation sequence(s) from start toend, such that:
+	1.	Only one letter can be changed at a time
+	2.	Each intermediate word must exist in the dictionary
+For example,
+Given: start = "hit" end = "cog" dict = ["hot","dot","dog","lot","log"]
+
+vector<vector<string>> findLadders(string start, string end, unordered_set<string> &dict) {
+    vector<vector<string> > vv;
+    if(start == end || isValid(start, end)){
+        vector<string> v(1, start);
+        v.push_back(end);
+        vv.push_back(v);
+        return vv;
+    }
+    
+    vector<vector<string> > vv1;
+    vector<string> v1;
+    v1.push_back(start);
+    set<string> st1;
+    st1.insert(start);
+    bool found = false;
+    while(v1.size()>0){
+        vv1.push_back(v1);
+        vector<string> v2;
+        for(int i=0; i<v1.size(); i++){
+            if(isValid(v1[i], end)){
+                found = true;
+                break;
+            }
+            for(unordered_set<string>::iterator it=dict.begin();
+                it!=dict.end(); it++){
+                if(st1.find(*it) ==st1.end() && isValid(v1[i], *it)){
+                    v2.push_back(*it);
+                    st1.insert(*it);
+                }
+            }
+        }
+        if(found) break;
+        v1.clear();
+        v1.insert(v1.begin(), v2.begin(), v2.end());
+    }
+    
+    vv.push_back(vector<string>(1, end));
+    int level = (int)vv1.size()-1;
+    while(level>=0){
+        vector<string> v4 = vv1[level];
+        vector<vector<string> > vv2;
+        for(int i=0; i<vv.size(); i++){
+            for(int j=0; j<v4.size(); j++){
+                if(isValid(*vv[i].begin(), v4[j])){
+                    vector<string> vvi = vv[i];
+                    vvi.insert(vvi.begin(),v4[j]);
+                    vv2.push_back(vvi);
+                }
+            }
+        }
+        vv.clear();
+        vv.insert(vv.begin(), vv2.begin(), vv2.end());
+        level --;
+    }
+    return vv;
+}
+
+bool isValid(string s1, string s2){
+    int count = 0;
+    for(int i=0;i<s1.length(); i++){
+        if(s1[i] != s2[i]){
+            count++;
+        }
+    }
+    return s1.length() == s2.length() && count ==1;
+}
